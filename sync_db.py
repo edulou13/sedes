@@ -10,6 +10,7 @@ from tornado.httpclient import AsyncHTTPClient
 from tornado import gen
 from functools import partial
 from urllib import urlencode
+from gammu import ERR_DEVICENOTEXIST, ERR_CANTOPENFILE, ERR_TIMEOUT
 from app.tools import cdict, utc, Modem
 from app.entities import db
 from app.criterias import personsCtr, messagesCtr, agendasCrt
@@ -58,9 +59,19 @@ def sync_db(localhost=True):
 	for prs in params:
 		exec_fetch(**prs)
 	if 8 >= utc.now().hour <= 9:
-		md = Modem('/etc/gammurc1')
-		for number in [76180435, 70219542, 67370901, 70219848]:
-			md.send(number, '{}, última sincronización'.format(utc.now().time().isoformat()[:8]))
+		try:
+			md = Modem('/etc/gammurc1')
+			for number in [76180435, 70219542, 67370901, 70219848]:
+				md.send(number, '{}, última sincronización'.format(utc.now().time().isoformat()[:8]))
+		except ERR_DEVICENOTEXIST:
+			# print 'without modem..!, please connect it'
+			logging.error('without modem..!, please connect it')
+		except ERR_CANTOPENFILE:
+			# print 'usb-port has change!, please update the settings'
+			logging.error('usb-port has change!, please update the settings')
+		except ERR_TIMEOUT:
+			# 'without network signal'
+			logging.error('without network signal')
 
 if __name__ == '__main__':
 	localhost = argv[1]=='--localhost' if len(argv)==2 else False
