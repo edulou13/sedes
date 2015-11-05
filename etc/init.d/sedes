@@ -1,0 +1,124 @@
+#!/bin/sh
+set -e
+
+### BEGIN INIT INFO
+# Provides:		slave
+# Required-Start:	$remote_fs $syslog
+# Required-Stop:	$remote_fs $syslog
+# Default-Start:	2 3 4 5
+# Default-Stop:		0 1 6
+# Short-Description:	slave, syncdb and sms
+# Description:		slave, syncdb and sms from sedes app
+### END INIT INFO
+
+#echo "$?"
+APP=""
+SCRIPTNAME=$(basename $0)
+MSG="Usage: /etc/init.d/$SCRIPTNAME {slave|syncdb|sms|request|all} {status|start|stop|restart}"
+
+case "$1" in
+	all|slave|syncdb|sms|request )
+		if [ $1 = "slave" ]; then
+			APP="client.py"
+		elif [ $1 = "syncdb" ]; then
+			APP="sync_db.py"
+		elif [ $1 = "sms" ]; then
+			APP="sms_notify.py"
+		elif [ $1 = "request" ]; then
+			APP="control_request.py"
+		else
+			APP="all"
+		fi
+		;;
+esac
+
+show_status () {
+	x=0
+	for i in $(ps -ef | egrep -e "sedes/$APP$"); do
+		if [ $x -lt 9 ]; then
+			if [ $x -eq 0 ]; then
+				echo -n "$i"
+			else
+				echo -n "    $i"
+			fi
+		elif [ $x -eq 8 ]; then
+			echo "$i\n"
+			x=0
+			x=$(($x-1))
+		fi
+		x=$(($x+1))
+	done
+	echo
+}
+
+do_stop() {
+	x=0
+	for xpid in $(ps -ef | egrep -e "sedes/$APP$"); do
+		x=$(($x+1))
+		if [ $x = 2 ]; then
+			kill $xpid || echo "??"
+		elif [ $x = 9 ]; then
+			x=0
+		fi
+		#echo "$x    $xpid"
+	done
+}
+
+do_start () {
+	do_stop
+	sleep 1
+	exec "/opt/sedes/$APP" &
+}
+
+case "$APP" in
+	all )
+		case "$2" in
+			start|stop|restart|status )
+				for app in "client" "sync_db" "sms_notify" "control_request"; do
+					APP="$app.py"
+					if [ $2 = "status" ]; then
+						show_status
+					elif [ $2 = "start" ]; then
+						do_start && echo "$APP was started"
+					elif [ $2 = "stop" ]; then
+						do_stop && echo "$APP was stopped"
+					else
+						do_start && echo "$APP was restarted"
+					fi
+				done
+				;;
+			* )
+				echo "$MSG"
+				;;
+		esac
+
+		;;
+	client.py|sync_db.py|sms_notify.py|control_request.py )
+		case "$2" in
+			start|restart )
+				do_start
+				if [ $2 = "start" ]; then
+					echo "$APP was started"
+				else
+					echo "$APP was restarted"
+				fi
+				;;
+			stop )
+				do_stop && echo "$APP was stopped"
+				;;
+			status )
+				show_status
+				;;
+			* )
+				echo "$MSG"
+				;;
+		esac
+		;;
+	* )
+		echo "$MSG"
+		;;
+esac
+
+# echo "filename:$0, pid:$$"
+# ps -ef | egrep -e "sedes/.*\.py$"
+# root      2072     1  0 06:43 pts/1    00:00:01 python /opt/sedes/sms_notify.py

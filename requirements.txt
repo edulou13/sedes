@@ -1,0 +1,9 @@
+cython
+schedule
+psycopg2
+pony
+#python-gammu
+pycurl
+futures
+tornado
+Fabric

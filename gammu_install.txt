@@ -1,0 +1,37 @@
+1:	apt-get install devscripts debhelper build-essential automake autoconf libreadline6 libreadline6-dev libsqlite3-dev libffi-dev libxml2-dev libxslt1-dev pkg-config libfreetype6-dev python-dev python-cxx-dev libssl-dev libcurl4-openssl-dev python-libxslt1 python-lxml libboost-python-dev gammu python-gammu libevent-dev -y
+
+2:	gammu-detect
+
+resultado del 5to comando:
+	; Archivo de configuración generado por gammu-detect.
+	; Por favor revisa el manual de Gammu para más información.
+
+	[gammu]
+	device = /dev/ttyUSB0											<---- ésto es la ruta del modem
+	name = Teléfono en puerto serial USB HUAWEI HUAWEI_Mobile
+	connection = at
+
+	[gammu1]
+	device = /dev/ttyUSB1
+	name = Teléfono en puerto serial USB HUAWEI HUAWEI_Mobile
+	connection = at
+	.
+	.
+	.
+
+3:	vim /etc/gammurc:	Copia la configuración de abajo y reemplaza por la ruta que está marcada arriba
+
+	[gammu]
+
+	port = /dev/ttyUSB0
+	model = at
+	connection = at19200
+	synchronizetime = yes
+	use_locking = no
+
+4:	gammu sendsms TEXT 76180435 -text "lo que sea":		para comprobar
+
+5:	wget https://bootstrap.pypa.io/get-pip.py
+6:	python get-pip.py
+
+7:	pip install -r requirements.txt -U:		bueno desde aquí continúa con lo que está en tu correo.

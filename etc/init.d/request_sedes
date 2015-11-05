@@ -1,0 +1,23 @@
+#!/bin/sh
+set -e
+
+### BEGIN INIT INFO
+# Provides:		request_sedes
+# Required-Start:	$remote_fs $syslog
+# Required-Stop:	$remote_fs $syslog
+# Default-Start:	2 3 4 5
+# Default-Stop:		0 1 6
+# Short-Description:	request
+# Description:		request
+### END INIT INFO
+
+SCRIPT="/etc/init.d/sedes"
+
+case "$1" in
+	start )
+		$SCRIPT "request" "start"
+		;;
+	stop )
+		$SCRIPT "request" "stop"
+		;;
+esac
