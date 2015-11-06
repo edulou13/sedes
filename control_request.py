@@ -38,6 +38,8 @@ def listen():
 		logging.error('usb-port has change!, please update the settings')
 	except ERR_TIMEOUT:
 		logging.error('without network signal')
+	except Exception, e:
+		print e
 
 if __name__ == '__main__':
 	listen()

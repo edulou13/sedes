@@ -49,6 +49,7 @@ class Modem(object):
 						break
 					except _ERR_UNKNOWNRESPONSE:
 						print 'ERR_UNKNOWNRESPONSE'
+						break
 				_sleep(5)
 			except KeyboardInterrupt:
 				break

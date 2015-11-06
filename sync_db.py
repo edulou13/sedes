@@ -64,7 +64,7 @@ def sync_db(localhost=True):
 		print e
 
 def sync_status():
-	if 8>=utc.now().hour<=9:
+	if utc.now().hour==8:
 		try:
 			md = Modem('/etc/gammurc1')
 			# for number in [76180435, 70219542, 67370901, 70219848]:
