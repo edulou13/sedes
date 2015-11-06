@@ -61,7 +61,7 @@ def sync_db(localhost=True):
 	try:
 		sync_status()
 	except Exception, e:
-		print e
+		print 'Error at sync_db: {}'.format(e)
 
 def sync_status():
 	if utc.now().hour==14:
@@ -83,8 +83,8 @@ def sync_status():
 
 if __name__ == '__main__':
 	localhost = argv[1]=='--localhost' if len(argv)==2 else False
-	sc.every(10).seconds.do(sync_db, localhost)
-	# sc.every(1).minutes.do(sync_db, localhost)
+	# sc.every(10).seconds.do(sync_db, localhost)
+	sc.every(5).minutes.do(sync_db, localhost)
 	# sc.every().day.at('11:08').do(sync_db, localhost)
 	# sc.every().hours.do(sync_db, localhost)
 	# sc.every().day.at('07:50').do(sync_db, localhost)
