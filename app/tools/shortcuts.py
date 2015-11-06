@@ -1,7 +1,7 @@
 #-*- coding: utf-8 -*-
 from time import sleep as _sleep
 from datetime import (datetime as _datetime, timedelta as _timedelta)
-from gammu import (StateMachine as _StateMachine, EncodeSMS as _EncodeSMS, ERR_EMPTY as _ERR_EMPTY, ERR_GETTING_SMSC as _ERR_GETTING_SMSC, ERR_UNKNOWNRESPONSE as _ERR_UNKNOWNRESPONSE)
+from gammu import (StateMachine as _StateMachine, EncodeSMS as _EncodeSMS, ERR_EMPTY as _ERR_EMPTY, ERR_GETTING_SMSC as _ERR_GETTING_SMSC, ERR_UNKNOWNRESPONSE as _ERR_UNKNOWNRESPONSE, ERR_UNKNOWN as _ERR_UNKNOWN)
 
 class UTC(object):
 	@classmethod
@@ -59,4 +59,6 @@ class Modem(object):
 				msg['SMSC'], msg['Number'] = dict(Location=1), '+591{phone}'.format(phone=int(phone))
 				print self.sm.SendSMS(msg)
 		except _ERR_GETTING_SMSC:
+			pass
+		except _ERR_UNKNOWN:
 			pass
