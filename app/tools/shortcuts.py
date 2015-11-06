@@ -61,4 +61,5 @@ class Modem(object):
 		except _ERR_GETTING_SMSC:
 			pass
 		except _ERR_UNKNOWN:
+			print 'Error on shortcuts'
 			pass

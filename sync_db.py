@@ -58,12 +58,12 @@ def sync_db(localhost=True):
 	params = [api_url('getsession',None), api_url('feedback', None, 'feedback'), api_url('getpersons', personsCtr), api_url('getmessages', messagesCtr), api_url('getagendas', agendasCrt)]
 	for prs in params:
 		exec_fetch(**prs)
-	try:
-		if utc.now().hour==14:
-			print 'Hour: {}'.format(utc.now().hour)
-			sync_status()
-	except Exception, e:
-		print 'Error at sync_db: {}'.format(e)
+	# try:
+	# 	if utc.now().hour==14:
+	# 		print 'Hour: {}'.format(utc.now().hour)
+	# 		sync_status()
+	# except Exception, e:
+	# 	print 'Error on sync_db: {}'.format(e)
 
 def sync_status():
 	try:
@@ -84,9 +84,9 @@ def sync_status():
 if __name__ == '__main__':
 	localhost = argv[1]=='--localhost' if len(argv)==2 else False
 	# sc.every(10).seconds.do(sync_db, localhost)
-	sc.every(5).minutes.do(sync_db, localhost)
+	# sc.every(5).minutes.do(sync_db, localhost)
 	# sc.every().day.at('11:08').do(sync_db, localhost)
-	# sc.every().hours.do(sync_db, localhost)
+	sc.every().hours.do(sync_db, localhost)
 	# sc.every().day.at('07:50').do(sync_db, localhost)
 	# sc.every().day.at('08:50').do(sync_db, localhost)
 	# sc.every().day.at('11:50').do(sync_db, localhost)
