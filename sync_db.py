@@ -59,27 +59,27 @@ def sync_db(localhost=True):
 	for prs in params:
 		exec_fetch(**prs)
 	try:
-		sync_status()
+		if utc.now().hour==14:
+			print 'Hour: {}'.format(utc.now().hour)
+			sync_status()
 	except Exception, e:
 		print 'Error at sync_db: {}'.format(e)
 
 def sync_status():
-	if utc.now().hour==14:
-		print 'Hour: {}'.format(utc.now().hour)
-		try:
-			md = Modem()
-			for number in [76180435]:
-			# for number in [76180435, 70219542, 67370901, 70219848]:
-				md.send(number, u'{}, última sincronización.'.format(utc.now().time().isoformat()[:8]))
-		except ERR_DEVICENOTEXIST:
-			# print 'without modem..!, please connect it'
-			logging.error('without modem..!, please connect it')
-		except ERR_CANTOPENFILE:
-			# print 'usb-port has change!, please update the settings'
-			logging.error('usb-port has change!, please update the settings')
-		except ERR_TIMEOUT:
-			# 'without network signal'
-			logging.error('without network signal')
+	try:
+		md = Modem()
+		for number in [76180435]:
+		# for number in [76180435, 70219542, 67370901, 70219848]:
+			md.send(number, u'{}, última sincronización.'.format(utc.now().time().isoformat()[:8]))
+	except ERR_DEVICENOTEXIST:
+		# print 'without modem..!, please connect it'
+		logging.error('without modem..!, please connect it')
+	except ERR_CANTOPENFILE:
+		# print 'usb-port has change!, please update the settings'
+		logging.error('usb-port has change!, please update the settings')
+	except ERR_TIMEOUT:
+		# 'without network signal'
+		logging.error('without network signal')
 
 if __name__ == '__main__':
 	localhost = argv[1]=='--localhost' if len(argv)==2 else False
