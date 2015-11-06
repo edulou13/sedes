@@ -17,7 +17,7 @@ humanize = lambda strdt: u'{} de {} del {}'.format(strdt[2], months[int(strdt[1]
 def listen():
 	try:
 		md = Modem(cfg = '/etc/gammurc1')
-		# sm = Modem()
+		sm = Modem()
 		for msg in md.get():
 			pr = personsCtr.get_byCellphone(msg.number)
 			if pr and msg.text.lower()==u'c':
@@ -25,12 +25,12 @@ def listen():
 				today = utc.now().date()
 				if pr.agendas.count() > 0 or pr.embarazadas.count() > 0:
 					for ag in pr.agendas.select(lambda ag: ag.mensaje.tipo in [1,2] and ag.fecha_con >= today):
-						md.send(pr.telf, u'Fecha de control: {}'.format(humanize(ag.fecha_con.isoformat().split('-'))))
+						sm.send(pr.telf, u'Fecha de control: {}'.format(humanize(ag.fecha_con.isoformat().split('-'))))
 					for pregnant in pr.embarazadas:
 						for ag in pregnant.agendas.select(lambda ag: ag.mensaje.tipo in [1,2] and ag.fecha_con >= today):
-							md.send(pr.telf, u'para: {}, fecha de control: {}'.format(pregnant.__str__(), humanize(ag.fecha_con.isoformat().split('-'))))
+							sm.send(pr.telf, u'para: {}, fecha de control: {}'.format(pregnant.__str__(), humanize(ag.fecha_con.isoformat().split('-'))))
 				else:
-					md.send(pr.telf, u'Usted no tiene controles próximos por ahora.')
+					sm.send(pr.telf, u'Usted no tiene controles próximos por ahora.')
 				md.erase(Folder=0, Location=msg.location)
 	except ERR_DEVICENOTEXIST:
 		logging.error('without modem..!, please connect it')
@@ -42,4 +42,8 @@ def listen():
 		print e
 
 if __name__ == '__main__':
-	listen()
+	while True:
+		try:
+			listen()
+		except KeyboardInterrupt:
+			break
