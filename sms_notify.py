@@ -41,10 +41,10 @@ def send_sms():
 		logging.error('without network signal')
 
 if __name__ == '__main__':
-	sc.every(1).minutes.do(send_sms)
-	# sc.every().day.at('09:00').do(send_sms)
-	# sc.every().day.at('13:00').do(send_sms)
-	# sc.every().day.at('18:00').do(send_sms)
+	# sc.every(1).minutes.do(send_sms)
+	sc.every().day.at('09:00').do(send_sms)
+	sc.every().day.at('13:00').do(send_sms)
+	sc.every().day.at('18:00').do(send_sms)
 	while True:
 		try:
 			sc.run_pending()
