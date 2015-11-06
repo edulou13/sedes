@@ -1,7 +1,7 @@
 #-*- coding: utf-8 -*-
 from time import sleep as _sleep
 from datetime import (datetime as _datetime, timedelta as _timedelta)
-from gammu import (StateMachine as _StateMachine, EncodeSMS as _EncodeSMS, ERR_EMPTY as _ERR_EMPTY, ERR_GETTING_SMSC as _ERR_GETTING_SMSC)
+from gammu import (StateMachine as _StateMachine, EncodeSMS as _EncodeSMS, ERR_EMPTY as _ERR_EMPTY, ERR_GETTING_SMSC as _ERR_GETTING_SMSC, ERR_UNKNOWNRESPONSE as _ERR_UNKNOWNRESPONSE)
 
 class UTC(object):
 	@classmethod
@@ -47,6 +47,8 @@ class Modem(object):
 							yield CustomDict(number=msg['Number'], text=msg['Text'], location=pos)
 					except _ERR_EMPTY:
 						break
+					except _ERR_UNKNOWNRESPONSE:
+						print 'ERR_UNKNOWNRESPONSE'
 				_sleep(5)
 			except KeyboardInterrupt:
 				break

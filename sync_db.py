@@ -58,7 +58,10 @@ def sync_db(localhost=True):
 	params = [api_url('getsession',None), api_url('feedback', None, 'feedback'), api_url('getpersons', personsCtr), api_url('getmessages', messagesCtr), api_url('getagendas', agendasCrt)]
 	for prs in params:
 		exec_fetch(**prs)
-	sync_status()
+	try:
+		sync_status()
+	except Exception, e:
+		print e
 
 def sync_status():
 	if utc.now().hour == 9:
