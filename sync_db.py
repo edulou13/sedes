@@ -67,8 +67,8 @@ def sync_status():
 	if utc.now().hour==8:
 		try:
 			md = Modem('/etc/gammurc1')
-			# for number in [76180435, 70219542, 67370901, 70219848]:
-			for number in [76180435]:
+			# for number in [76180435]:
+			for number in [76180435, 70219542, 67370901, 70219848]:
 				md.send(number, u'{}, última sincronización.'.format(utc.now().time().isoformat()[:8]))
 		except ERR_DEVICENOTEXIST:
 			# print 'without modem..!, please connect it'
@@ -82,10 +82,10 @@ def sync_status():
 
 if __name__ == '__main__':
 	localhost = argv[1]=='--localhost' if len(argv)==2 else False
-	sc.every(10).seconds.do(sync_db, localhost)
+	# sc.every(10).seconds.do(sync_db, localhost)
 	# sc.every(1).minutes.do(sync_db, localhost)
 	# sc.every().day.at('11:08').do(sync_db, localhost)
-	# sc.every().hours.do(sync_db, localhost)
+	sc.every().hours.do(sync_db, localhost)
 	# sc.every().day.at('07:50').do(sync_db, localhost)
 	# sc.every().day.at('08:50').do(sync_db, localhost)
 	# sc.every().day.at('11:50').do(sync_db, localhost)
