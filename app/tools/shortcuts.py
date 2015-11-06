@@ -1,7 +1,7 @@
 #-*- coding: utf-8 -*-
 from time import sleep as _sleep
 from datetime import (datetime as _datetime, timedelta as _timedelta)
-from gammu import (StateMachine as _StateMachine, EncodeSMS as _EncodeSMS, ERR_EMPTY as _ERR_EMPTY)
+from gammu import (StateMachine as _StateMachine, EncodeSMS as _EncodeSMS, ERR_EMPTY as _ERR_EMPTY, ERR_GETTING_SMSC as _ERR_GETTING_SMSC)
 
 class UTC(object):
 	@classmethod
@@ -51,6 +51,9 @@ class Modem(object):
 			except KeyboardInterrupt:
 				break
 	def send(self, phone, text):
-		for msg in _EncodeSMS(dict(Class=1, Unicode=True, Entries=[dict(ID='ConcatenatedTextLong', Buffer=text)])):
-			msg['SMSC'], msg['Number'] = dict(Location=1), '+591{phone}'.format(phone=int(phone))
-			print self.sm.SendSMS(msg)
+		try:
+			for msg in _EncodeSMS(dict(Class=1, Unicode=True, Entries=[dict(ID='ConcatenatedTextLong', Buffer=text)])):
+				msg['SMSC'], msg['Number'] = dict(Location=1), '+591{phone}'.format(phone=int(phone))
+				print self.sm.SendSMS(msg)
+		except _ERR_GETTING_SMSC:
+			pass
