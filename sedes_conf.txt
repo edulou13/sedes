@@ -1,0 +1,72 @@
+
+Detalle de comandos, para el servidor SEDES de sincronización de datos y sms
+
+Servicios:
+	slave			Aplicación principal esclava.
+	syncdb			Sincronización con la base de datos de Heroku
+	sms				Envío y recepción de sms
+	request			Recepción de sms desde Heroku (Mensajes individuales o masivos)
+	all				Bash, para todos los anteriores
+
+	Estdos:
+		status		Reporte del estado del servicio (en ejecución o detenido)
+		start		Iniciar servicio
+		stop		Detener servicio
+		restart		Reiniciar servicio
+
+
+Comandos:
+	
+	1.	sudo /etc/init.d/sedes {servicio} {operación}
+	
+	2.	sudo gammu-detect
+			con éste commando se despliega una lista con los modems conectador en el servidor, para su posterior configuración.
+			Debe desplegarse una lista como la de abajo:
+
+			[gammu]
+			device = /dev/ttyUSB0
+			name = Phone on USB serial port HUAWEI HUAWEI_Mobile
+			connection = at
+
+			[gammu1]
+			device = /dev/ttyUSB1
+			name = Phone on USB serial port HUAWEI HUAWEI_Mobile
+			connection = at
+
+			[gammu2]
+			device = /dev/ttyUSB2
+			name = Phone on USB serial port HUAWEI HUAWEI_Mobile
+			connection = at
+			.
+			.
+			.
+
+			Ojo "ttyUSBx" desde el 0 hasta 2, son direcciones de puerto de un sólo modem y desde 3 hasta 5,
+			son del otro modem.
+
+	3.	sudo vim /etc/gammurc		==>		configuración, para el modem de envío de sms
+
+		[gammu]
+
+		port = /dev/ttyUSB0
+		model = at
+		connection = at19200
+		synchronizetime = yes
+		use_locking = no
+
+	4.	sudo vim /etc/gammurc1		==>		configuración, para el modem de recepción de sms
+
+		[gammu]
+
+		port = /dev/ttyUSB3
+		model = at
+		connection = at19200
+		synchronizetime = yes
+		use_locking = no
+	
+ejemplo:
+
+	1.1.	sudo /etc/init.d/sedes all start
+			éste comando es para levantar todos los servicios.
+
+Para editar las configuraciones de los modems, primero debemos detener todos los servicios.
