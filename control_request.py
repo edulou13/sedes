@@ -19,7 +19,7 @@ def listen():
 		md = Modem(cfg = '/etc/gammurc1')
 		sm = Modem()
 		for msg in md.get():
-			pr = personsCtr.get_byCellphone(msg.number)
+			pr = personsCtr.get_byCellphone(msg.number) if msg.number.isdigit() else None
 			if pr and msg.text.lower()==u'c':
 				print u'{}, agendas: {}, pregnants: {}\n'.format(pr, pr.agendas.count(), pr.embarazadas.count())
 				today = utc.now().date()
