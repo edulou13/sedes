@@ -6,6 +6,7 @@ from gammu import ERR_DEVICENOTEXIST, ERR_CANTOPENFILE, ERR_TIMEOUT
 from app.tools import utc, Modem
 from app.entities import db
 from app.criterias import personsCtr
+import re as _re
 
 db.bind('postgres', host='127.0.0.1', database='sedes', user='postgres', password='master')
 db.generate_mapping(create_tables=True)
@@ -13,13 +14,18 @@ db.generate_mapping(create_tables=True)
 months = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre']
 humanize = lambda strdt: u'{} de {} del {}'.format(strdt[2], months[int(strdt[1]) - 1], strdt[0])
 
+pattern = "(?:(?:\\+591)?(6|7)[0-9]{7})"
+
 @db_session
 def listen():
 	try:
 		md = Modem(cfg = '/etc/gammurc1')
 		sm = Modem()
 		for msg in md.get():
-			pr = personsCtr.get_byCellphone(msg.number) if msg.number.isdigit() else None
+			#pr = personsCtr.get_byCellphone(msg.number) if msg.number.isdigit() else None
+			cellphone = _re.match(pattern, msg.number).group()
+			cellphone = int(cellphone.replace('+591','')) if (len(cellphone) == 12) else int(cellphone)
+			pr = personsCtr.get_byCellphone(cellphone) if cellphone else None
 			if pr and msg.text.lower()==u'c':
 				print u'{}, agendas: {}, pregnants: {}\n'.format(pr, pr.agendas.count(), pr.embarazadas.count())
 				today = utc.now().date()
@@ -31,7 +37,7 @@ def listen():
 							sm.send(pr.telf, u'para: {}, fecha de control: {}'.format(pregnant.__str__(), humanize(ag.fecha_con.isoformat().split('-'))))
 				else:
 					sm.send(pr.telf, u'Usted no tiene controles próximos por ahora.')
-				md.erase(Folder=0, Location=msg.location)
+			md.erase(Folder=0, Location=msg.location)
 	except ERR_DEVICENOTEXIST:
 		logging.error('without modem..!, please connect it')
 	except ERR_CANTOPENFILE:
