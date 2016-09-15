@@ -25,7 +25,7 @@ def listen():
 			#pr = personsCtr.get_byCellphone(msg.number) if msg.number.isdigit() else None
 			cellphone = _re.match(pattern, msg.number)
 			if cellphone:
-				cellphone = int(cellphone.group().replace('+591','')) if (len(cellphone.group()) == 12) else int(cellphone.group())
+				cellphone = cellphone.group().replace('+591','') if (len(cellphone.group()) == 12) else cellphone.group()
 				pr = personsCtr.get_byCellphone(cellphone) if cellphone else None
 				if pr and msg.text.lower()==u'c':
 					print u'{}, agendas: {}, pregnants: {}\n'.format(pr, pr.agendas.count(), pr.embarazadas.count())
