@@ -1,5 +1,5 @@
 #-*- coding: utf-8 -*-
-from time import sleep as _sleep
+#from time import sleep as _sleep
 from datetime import (datetime as _datetime, timedelta as _timedelta)
 from gammu import (StateMachine as _StateMachine, EncodeSMS as _EncodeSMS, ERR_EMPTY as _ERR_EMPTY, ERR_GETTING_SMSC as _ERR_GETTING_SMSC, ERR_UNKNOWNRESPONSE as _ERR_UNKNOWNRESPONSE, ERR_UNKNOWN as _ERR_UNKNOWN)
 
@@ -39,19 +39,28 @@ class Modem(object):
 		except _ERR_EMPTY:
 			pass
 	def get(self):
-		while True:
+		# while True:
+		# 	try:
+		# 		for pos in xrange(255):
+		# 			try:
+		# 				for msg in self.sm.GetSMS(Folder=0, Location=pos):
+		# 					yield CustomDict(number=msg['Number'], text=msg['Text'], location=pos)
+		# 			except _ERR_EMPTY:
+		# 				break
+		# 			except _ERR_UNKNOWNRESPONSE:
+		# 				print 'ERR_UNKNOWNRESPONSE'
+		# 				break
+		# 		_sleep(5)
+		# 	except KeyboardInterrupt:
+		# 		break
+		for pos in xrange(255):
 			try:
-				for pos in xrange(255):
-					try:
-						for msg in self.sm.GetSMS(Folder=0, Location=pos):
-							yield CustomDict(number=msg['Number'], text=msg['Text'], location=pos)
-					except _ERR_EMPTY:
-						break
-					except _ERR_UNKNOWNRESPONSE:
-						print 'ERR_UNKNOWNRESPONSE'
-						break
-				_sleep(5)
-			except KeyboardInterrupt:
+				for msg in self.sm.GetSMS(Folder=0, Location=pos):
+					yield CustomDict(number=msg['Number'], text=msg['Text'], location=pos)
+			except _ERR_EMPTY:
+				break
+			except _ERR_UNKNOWNRESPONSE:
+				print 'ERR_UNKNOWNRESPONSE'
 				break
 	def send(self, phone, text):
 		try:
